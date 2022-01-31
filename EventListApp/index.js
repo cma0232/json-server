@@ -43,7 +43,7 @@ api.getEvents().then((data) => {
         td1.className = 'event-name';
         td2.className = 'start-date';
         td2.className = 'end-date';
-
+   
         document.getElementsByTagName('TABLE')[0].appendChild(tr)
     }
 })   
