@@ -14,8 +14,15 @@ let data = api.getEvents().then((data) => {
         //input1.setAttribute("onchange", "inputChange(this.value)")
         input1.addEventListener('change', (event) => {
             newEvent['eventName'] = event.target.value
+            for (let key in newEvent) {
+                console.log(data[i])
+                if (key in data[i]) {
+                    data[i][key] = newEvent[key];
+                }
+            }
             console.log(newEvent)
         }, false)
+        
         td1.appendChild(input1)
         tr.appendChild(td1)
         
@@ -27,8 +34,16 @@ let data = api.getEvents().then((data) => {
         //input2.setAttribute("onchange", "inputChange(this.value)")
         input2.addEventListener('change', (event) => {
             newEvent['startDate'] = event.target.value
+            for (let key in newEvent) {
+                console.log(key)
+                if (key in data[i]) {
+
+                    data[i][key] = newEvent[key];
+                }
+            }
             console.log(newEvent)
         }, false)
+        
         td2.appendChild(input2);
         tr.appendChild(td2);
         
@@ -39,8 +54,23 @@ let data = api.getEvents().then((data) => {
         //input3.setAttribute("onchange", "inputChange(this.value)")
         input3.addEventListener('change', (event) => {
             newEvent['endDate'] = event.target.value
+            for (let key in newEvent) {
+                console.log(key)
+                if (key in data[i]) {
+
+                    data[i][key] = newEvent[key];
+                }
+                console.log(data[i])
+            }
             console.log(newEvent)
         }, false)
+        for (let key in newEvent) {
+            console.log(key)
+            if (key in data[i]) {
+
+                data[i][key] = newEvent[key];
+            }
+        }
         td3.appendChild(input3);
         tr.appendChild(td3);
 
@@ -64,12 +94,28 @@ let data = api.getEvents().then((data) => {
             input1.removeAttribute('disabled', 'True');
             input2.removeAttribute('disabled', 'True');
             input3.removeAttribute('disabled', 'True');
-            let id = data[i]['id'];
             
             console.log(btn1.innerHTML)
             btn1.innerHTML = 'SAVE'
+            console.log(data[i])
+            console.log(newEvent)
+            for (let key in newEvent) {
+                console.log(key)
+                if (key in data[i]) {
+                    
+                    data[i][key] = newEvent[key];
+                }
+            }
+            console.log(data[i])
             btn1.onclick = function() {
-                api.updateEvent(id, newEvent)
+                
+                for(let key in newEvent){
+                    if (key in data[i]){
+                        data[i][key] = newEvent[key];
+                    } 
+                }
+                
+                api.updateEvent(data[i]['id'], data[i])
             }
             //
         }
