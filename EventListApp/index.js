@@ -12,6 +12,10 @@ let data = api.getEvents().then((data) => {
         input1.value = data[i]['eventName']
         input1.setAttribute('disabled', 'True')
         //input1.setAttribute("onchange", "inputChange(this.value)")
+        input1.addEventListener('change', (event) => {
+            newEvent['eventName'] = event.target.value
+            console.log(newEvent)
+        }, false)
         td1.appendChild(input1)
         tr.appendChild(td1)
         
@@ -21,6 +25,10 @@ let data = api.getEvents().then((data) => {
         input2.value = data[i]['startDate'];
         input2.setAttribute('disabled', 'True');
         //input2.setAttribute("onchange", "inputChange(this.value)")
+        input2.addEventListener('change', (event) => {
+            newEvent['startDate'] = event.target.value
+            console.log(newEvent)
+        }, false)
         td2.appendChild(input2);
         tr.appendChild(td2);
         
@@ -29,6 +37,10 @@ let data = api.getEvents().then((data) => {
         input3.value = data[i]['endDate'];
         input3.setAttribute('disabled', 'True');
         //input3.setAttribute("onchange", "inputChange(this.value)")
+        input3.addEventListener('change', (event) => {
+            newEvent['endDate'] = event.target.value
+            console.log(newEvent)
+        }, false)
         td3.appendChild(input3);
         tr.appendChild(td3);
 
@@ -47,13 +59,28 @@ let data = api.getEvents().then((data) => {
         td1.className = 'event-name';
         td2.className = 'start-date';
         td2.className = 'end-date';
+
+        btn1.onclick = function() {
+            input1.removeAttribute('disabled', 'True');
+            input2.removeAttribute('disabled', 'True');
+            input3.removeAttribute('disabled', 'True');
+            let id = data[i]['id'];
+            
+            console.log(btn1.innerHTML)
+            btn1.innerHTML = 'SAVE'
+            btn1.onclick = function() {
+                api.updateEvent(id, newEvent)
+            }
+            //
+        }
+
         btn2.onclick = function () {
             var div = this.parentElement.parentElement;
             console.log(div)
             div.style.display = "none";
             api.deleteEvent(data[i]['id'])
         }
-   
+    
         document.getElementsByTagName('TABLE')[0].appendChild(tr)
     }
 })   
