@@ -6,10 +6,10 @@ body {
     
 }
 * {
-    margin: 0;
     padding: 0;
     box-sizing: border-box;
-    
+    margin:auto;
+    text-align:centre;
 }
 header{
     height: 150px;
@@ -17,8 +17,9 @@ header{
     text-align: center;
 }
 
+
 .addbtn {
-    margin: 2rem;
+    margin: 5rem;
     padding: 0.5em;
     cursor: pointer;
     color: white;

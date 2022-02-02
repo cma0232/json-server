@@ -1,17 +1,16 @@
 import { api } from "./api.js";
 
-
 // get all events
 let data = api.getEvents().then((data) => {
-    console.log('get')
+    console.log('get');
     let checkUpdate = (newEvent, data) =>{
         for (let key in newEvent) {
-            console.log(data)
+            console.log(data);
             if (key in data) {
                 data[key] = newEvent[key];
-            }
-        }
-    }
+            };
+        };
+    };
     for(let i=0; i<data.length; i++){
         let tr = document.createElement('TR');
 
@@ -24,10 +23,10 @@ let data = api.getEvents().then((data) => {
             newEvent['eventName'] = event.target.value;
             checkUpdate(newEvent, data[i])
             console.log(newEvent)
-        }, false)
+        }, false);
         
-        td1.appendChild(input1)
-        tr.appendChild(td1)
+        td1.appendChild(input1);
+        tr.appendChild(td1);
         
 
         let td2 = document.createElement("TD");
@@ -41,7 +40,7 @@ let data = api.getEvents().then((data) => {
             newEvent['startDate'] = event.target.value;
             checkUpdate(newEvent, data[i]);
             console.log(newEvent);
-        }, false)
+        }, false);
         
         td2.appendChild(input2);
         tr.appendChild(td2);
@@ -55,23 +54,23 @@ let data = api.getEvents().then((data) => {
         input3.addEventListener('change', (event) => {
             newEvent['endDate'] = event.target.value;
             checkUpdate(newEvent, data[i]);
-            console.log(newEvent)
+            console.log(newEvent);
         }, false);
         
         td3.appendChild(input3);
         tr.appendChild(td3);
 
-        let td4 = document.createElement('TD')
+        let td4 = document.createElement('TD');
         var btn1 = document.createElement("button");
-        btn1.className ='edit'
+        btn1.className ='edit';
         btn1.appendChild(document.createTextNode("EDIT"));
         var btn2 = document.createElement("button");
-        btn2.className='del'
+        btn2.className='del';
         btn2.appendChild(document.createTextNode("DELETE"));
    
         td4.appendChild(btn1);
         td4.appendChild(btn2);
-        tr.appendChild(td4)
+        tr.appendChild(td4);
 
         td1.className = 'event-name';
         td2.className = 'start-date';
@@ -95,78 +94,85 @@ let data = api.getEvents().then((data) => {
         };
         document.getElementsByTagName('TABLE')[0].appendChild(tr)
     };
+
+
+    // add new event
+    let newEvent = {};
+    var addbtn = document.getElementsByClassName("addbtn");
+    addbtn[0].addEventListener('click', () => {
+        
+        if (data.length < document.getElementsByTagName('TR').length -2) {
+            return 0
+        }
+
+        let tr = document.createElement('TR');
+        let td1 = document.createElement("TD");
+        let input1 = document.createElement('INPUT');
+        input1.addEventListener('change', (event) => {
+            newEvent['eventName'] = event.target.value;
+            console.log(newEvent);
+        }, false);
+
+        td1.appendChild(input1);
+        tr.appendChild(td1);
+
+        let td2 = document.createElement("TD");
+        let input2 = document.createElement('INPUT');
+        input2.setAttribute('type', 'date');
+        input2.addEventListener('change', (event) => {
+            newEvent['startDate'] = event.target.value;
+            console.log(newEvent);
+        }, false);
+
+        td2.appendChild(input2);
+        tr.appendChild(td2);
+
+        let td3 = document.createElement("TD");
+        let input3 = document.createElement('INPUT');
+        input3.setAttribute('type', 'date');
+        input3.addEventListener('change', (event) => {
+            newEvent['endDate'] = event.target.value;
+            console.log(newEvent);
+        }, false);
+
+        td3.appendChild(input3);
+        tr.appendChild(td3);
+
+        let td4 = document.createElement('TD');
+        var btn1 = document.createElement("button");
+        btn1.className = 'save';
+        btn1.appendChild(document.createTextNode("SAVE"));
+        var btn2 = document.createElement("button");
+        btn2.className = 'del';
+        btn2.appendChild(document.createTextNode("DELETE"));
+
+        td4.appendChild(btn1);
+        td4.appendChild(btn2);
+        tr.appendChild(td4);
+
+        td1.className = 'event-name';
+        td2.className = 'start-date';
+        td2.className = 'end-date';
+
+        // save event
+        btn1.onclick = function () {
+
+            newEvent['id'] = document.getElementsByTagName('TR').length / 2 + 1;
+            console.log(newEvent);
+            api.addEvent(newEvent);
+        };
+
+        // delete event
+        btn2.onclick = function () {
+            var div = this.parentElement.parentElement;
+            console.log(div);
+            div.style.display = "none";
+            api.deleteEvent(data[i]['id']);
+        };
+
+        document.getElementsByTagName('TABLE')[0].appendChild(tr);
+    }, false);
 });
 
-// add new event
-let newEvent = {};
-var addbtn = document.getElementsByClassName("addbtn");
-addbtn[0].addEventListener('click',() =>{
-    let tr = document.createElement('TR');
-    let td1 = document.createElement("TD");
-    let input1 = document.createElement('INPUT');
-    input1.addEventListener('change', (event)=>{
-        newEvent['eventName'] = event.target.value
-        console.log(newEvent)
-    },false);
- 
-    td1.appendChild(input1);
-    tr.appendChild(td1);
-
-    let td2 = document.createElement("TD");
-    let input2 = document.createElement('INPUT');
-    input2.setAttribute('type', 'date');
-    input2.addEventListener('change', (event) => {
-        newEvent['startDate'] = event.target.value
-        console.log(newEvent)
-    }, false);
-  
-    td2.appendChild(input2);
-    tr.appendChild(td2);
-
-    let td3 = document.createElement("TD");
-    let input3 = document.createElement('INPUT');
-    input3.setAttribute('type', 'date');
-    input3.addEventListener('change', (event) => {
-        newEvent['endDate'] = event.target.value
-        console.log(newEvent)
-    }, false);
-
-    td3.appendChild(input3);
-    tr.appendChild(td3);
-
-    let td4 = document.createElement('TD');
-    var btn1 = document.createElement("button");
-    btn1.className = 'save';
-    btn1.appendChild(document.createTextNode("SAVE"));
-    var btn2 = document.createElement("button");
-    btn2.className = 'del'
-    btn2.appendChild(document.createTextNode("DELETE"));
-
-    td4.appendChild(btn1);
-    td4.appendChild(btn2);
-    tr.appendChild(td4);
-
-    td1.className = 'event-name';
-    td2.className = 'start-date';
-    td2.className = 'end-date';
-
-    // save event
-    btn1.onclick = function() {
-        console.log()
-        newEvent['id'] = document.getElementsByTagName('TR').length /2 +1;
-        console.log(newEvent)
-        api.addEvent(newEvent)
-    };
-
-    // delete event
-    btn2.onclick = function () {
-        var div = this.parentElement.parentElement;
-        console.log(div)
-        div.style.display = "none";
-        api.deleteEvent(data[i]['id'])
-    };
-
-    document.getElementsByTagName('TABLE')[0].appendChild(tr)
-}, false)
 
 
