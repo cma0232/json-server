@@ -3,6 +3,17 @@ import { api } from "./api.js";
 // get all events
 let data = api.getEvents().then((data) => {
     console.log('get');
+    function convertISOtoDate(string){
+        let date = new Date;
+        date.setMilliseconds(string);
+        return date
+    }
+    function convertDatetoISO(string){
+        let date = new Date(string);
+        return date.getTime()
+    }
+    
+
     let checkUpdate = (newEvent, data) =>{
         for (let key in newEvent) {
             console.log(data);
@@ -23,6 +34,8 @@ let data = api.getEvents().then((data) => {
 
         let td1 = document.createElement("TD");
         let input1 = document.createElement('INPUT')
+            
+
         input1.value = data[i]['eventName']
         input1.setAttribute('disabled', 'True')
 
@@ -38,13 +51,13 @@ let data = api.getEvents().then((data) => {
 
         let td2 = document.createElement("TD");
         let input2 = document.createElement('INPUT');
+        console.log(convertISOtoDate(data[i]['startDate']));
+        input2.value = convertISOtoDate(data[i]['startDate']);
 
-        // q: how to use getTime()?
-        input2.value = data[i]['startDate'];
         input2.setAttribute('disabled', 'True');
-       
+        
         input2.addEventListener('change', (event) => {
-            newEvent['startDate'] = event.target.value;
+            newEvent['startDate'] = event.target.value.getTime();
             checkUpdate(newEvent, data[i]);
             console.log(newEvent);
         }, false);
@@ -54,12 +67,12 @@ let data = api.getEvents().then((data) => {
         
         let td3 = document.createElement("TD");
         let input3 = document.createElement('INPUT');
-        input3.value = data[i]['endDate'];
+        input3.value = convertISOtoDate(data[i]['endDate']);
+
         input3.setAttribute('disabled', 'True');
         
-
         input3.addEventListener('change', (event) => {
-            newEvent['endDate'] = event.target.value;
+            newEvent['endDate'] = event.target.value.getTime();
             checkUpdate(newEvent, data[i]);
             console.log(newEvent);
         }, false);
@@ -168,7 +181,7 @@ let data = api.getEvents().then((data) => {
         let input2 = document.createElement('INPUT');
         input2.setAttribute('type', 'date');
         input2.addEventListener('change', (event) => {
-            newEvent['startDate'] = event.target.value;
+            newEvent['startDate'] = convertDatetoISO(event.target.value);
             console.log(newEvent);
         }, false);
 
@@ -179,7 +192,7 @@ let data = api.getEvents().then((data) => {
         let input3 = document.createElement('INPUT');
         input3.setAttribute('type', 'date');
         input3.addEventListener('change', (event) => {
-            newEvent['endDate'] = event.target.value;
+            newEvent['endDate'] = convertDatetoISO(event.target.value);
             console.log(newEvent);
         }, false);
 

@@ -3,7 +3,7 @@
     {
       "eventName": "TEST-1",
       "startDate": "1641790800000",
-      "endDate": "1641790800000ii",
+      "endDate": "1641790800000",
       "id": 1
     },
     {
@@ -19,58 +19,10 @@
       "id": 3
     },
     {
-      "eventName": "test-4",
-      "startDate": "2022-02-12",
-      "endDate": "2022-02-16",
+      "eventName": "test",
+      "startDate": 1643846400000,
+      "endDate": 1643932800000,
       "id": 4
-    },
-    {
-      "eventName": "TEST-5",
-      "startDate": "1641790800000",
-      "endDate": "1641790800000ii",
-      "id": 5
-    },
-    {
-      "eventName": "TEST-6",
-      "startDate": "1644037200000",
-      "endDate": "1644469200000",
-      "id": 6
-    },
-    {
-      "eventName": "TEST-7",
-      "startDate": "1641963600000",
-      "endDate": "1642309200000",
-      "id": 7
-    },
-    {
-      "eventName": "test-8",
-      "startDate": "2022-02-12",
-      "endDate": "2022-02-16",
-      "id": 8
-    },
-    {
-      "eventName": "TEST-9",
-      "startDate": "1641790800000",
-      "endDate": "1641790800000ii",
-      "id": 9
-    },
-    {
-      "eventName": "TEST-10",
-      "startDate": "1644037200000",
-      "endDate": "1644469200000",
-      "id": 10
-    },
-    {
-      "eventName": "TEST-11",
-      "startDate": "1641963600000",
-      "endDate": "1642309200000",
-      "id": 11
-    },
-    {
-      "eventName": "test-12",
-      "startDate": "2022-02-12",
-      "endDate": "2022-02-16",
-      "id": 12
     }
   ]
 }
