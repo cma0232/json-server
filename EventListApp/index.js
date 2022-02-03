@@ -11,8 +11,15 @@ let data = api.getEvents().then((data) => {
             };
         };
     };
-    for(let i=0; i<data.length; i++){
+    function displayData(data){
+        let l = document.getElementsByClassName('myinput');
+        for (let i = 0; i < l.length; i++) {
+            l[i].innerHTML = '';
+        }
+
+        for(let i=0; i<data.length; i++){
         let tr = document.createElement('TR');
+        tr.className = 'myinput'
 
         let td1 = document.createElement("TD");
         let input1 = document.createElement('INPUT')
@@ -62,7 +69,7 @@ let data = api.getEvents().then((data) => {
 
         let td4 = document.createElement('TD');
         var btn1 = document.createElement("button");
-        btn1.className ='edit';
+        btn1.className = `edit${i}`;
         btn1.appendChild(document.createTextNode("EDIT"));
         var btn2 = document.createElement("button");
         btn2.className='del';
@@ -81,8 +88,12 @@ let data = api.getEvents().then((data) => {
             input2.removeAttribute('disabled', 'True');
             input3.removeAttribute('disabled', 'True');
             
-            btn1.innerHTML = 'SAVE';
-            btn1.onclick = function() {
+            console.log(document.getElementsByClassName(`edit${i}`)[0])
+            document.getElementsByClassName(`edit${i}`)[0].innerText = 'SAVE';
+            document.getElementsByClassName(`edit${i}`)[0].id = `save${i}`;
+
+            console.log(document.getElementById(`save${i}`))
+            document.getElementById(`save${i}`).onclick = function () {
                 api.updateEvent(data[i]['id'], data[i])
             };
         };
@@ -93,8 +104,45 @@ let data = api.getEvents().then((data) => {
             api.deleteEvent(data[i]['id']);
         };
         document.getElementsByTagName('TABLE')[0].appendChild(tr)
-    };
+    }};
 
+    let rows_per_page = 5;
+    let curr_page = 1
+
+    function display(rows_per_page, data, curr_page){
+        let start = (curr_page-1) * rows_per_page;
+        let end = start + rows_per_page;
+
+        let display_list = data.slice(start, end);
+        displayData(display_list);
+    }
+    
+    function managePagination(rows_per_page, data){
+        console.log(data)
+        let totalPage = Math.ceil(data.length / rows_per_page);
+        console.log(totalPage)
+        let pre = document.getElementsByClassName('previous')[0];
+        let next = document.getElementsByClassName('next')[0];
+        console.log(pre)
+        pre.onclick = function() {
+            curr_page -= 1;
+            if(curr_page <= totalPage && curr_page >0){
+                
+                display(rows_per_page, data, curr_page);
+            }
+            
+        }
+
+        next.onclick = function() {
+            curr_page += 1;
+            if (curr_page <= totalPage && curr_page > 0){
+                display(rows_per_page, data, curr_page);
+            }
+           
+        }
+    }
+    display(rows_per_page, data, curr_page);
+    managePagination(rows_per_page, data);
 
     // add new event
     let newEvent = {};
