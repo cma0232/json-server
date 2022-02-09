@@ -1,20 +1,20 @@
 import { api } from "./api.js";
 
 // get all events
-let data = api.getEvents().then((data) => {
+api.getEvents().then((data) => {
     console.log('get');
-    function convertISOtoDate(string){
+    function convertISOtoDate(string) {
         let date = new Date;
         date.setMilliseconds(string);
         return date
     }
-    function convertDatetoISO(string){
+    
+    function convertDatetoISO(string) {
         let date = new Date(string);
         return date.getTime()
     }
-    
 
-    let checkUpdate = (newEvent, data) =>{
+    let checkUpdate = (newEvent, data) => {
         for (let key in newEvent) {
             console.log(data);
             if (key in data) {
@@ -22,136 +22,94 @@ let data = api.getEvents().then((data) => {
             };
         };
     };
-    function displayData(data){
-        let l = document.getElementsByClassName('myinput');
+    function displayData(data) {
+        let l = $('.myinput');
+        console.log(l)
         for (let i = 0; i < l.length; i++) {
             l[i].innerHTML = '';
         }
 
-        for(let i=0; i<data.length; i++){
-        let tr = document.createElement('TR');
-        tr.className = 'myinput'
+        data.forEach((item, index) => {
+            $('table').append(
+                '<tr class="myinput">' + 
+                '<td><input class="input1'+ index +'" disabled="True" value =' + item["eventName"] + '></td>'+
+                '<td><input class="input2' + index +'" disabled="True" value =' + convertISOtoDate(item["startDate"]) + '></td>' +
+                '<td><input class="input3' + index +'" disabled="True" value =' + convertISOtoDate(item["endDate"]) + '></td>' +
+                '<td><button class=' + `edit${index}`+ '>EDIT</button>' +
+                '<button class="del' + index +'">DELETE</button>' +
+                '</tr>'
+            )
+            $(`.input1${index}`).on('change', (event) => {
+                newEvent['eventName'] = event.target.value;
+                checkUpdate(newEvent, item);
+                console.log(newEvent);
+            });
 
-        let td1 = document.createElement("TD");
-        let input1 = document.createElement('INPUT')
-            
+            $(`.input2${index}`).on('change', (event) => {
+                newEvent['startDate'] = event.target.value;
+                checkUpdate(newEvent, item);
+                console.log(newEvent);
+            });
 
-        input1.value = data[i]['eventName']
-        input1.setAttribute('disabled', 'True')
+            $(`.input3${index}`).on('change', (event) => {
+                newEvent['endDate'] = event.target.value;
+                checkUpdate(newEvent, item);
+                console.log(newEvent);
+            })
 
-        input1.addEventListener('change', (event) => {
-            newEvent['eventName'] = event.target.value;
-            checkUpdate(newEvent, data[i])
-            console.log(newEvent)
-        }, false);
-        
-        td1.appendChild(input1);
-        tr.appendChild(td1);
-        
+            $(`.edit${index}`).on('click', ()=>{
+                $(`.input1${index}`).removeAttr('disabled');
+                $(`.input2${index}`).removeAttr('disabled');
+                $(`.input3${index}`).removeAttr('disabled');
 
-        let td2 = document.createElement("TD");
-        let input2 = document.createElement('INPUT');
-        console.log(convertISOtoDate(data[i]['startDate']));
-        input2.value = convertISOtoDate(data[i]['startDate']);
+                $(`.edit${index}`)[0].innerHTML = 'SAVE';
+                $(`.edit${index}`)[0].id = `save${index}`;
 
-        input2.setAttribute('disabled', 'True');
-        
-        input2.addEventListener('change', (event) => {
-            newEvent['startDate'] = event.target.value.getTime();
-            checkUpdate(newEvent, data[i]);
-            console.log(newEvent);
-        }, false);
-        
-        td2.appendChild(input2);
-        tr.appendChild(td2);
-        
-        let td3 = document.createElement("TD");
-        let input3 = document.createElement('INPUT');
-        input3.value = convertISOtoDate(data[i]['endDate']);
+                $(`#save${index}`).on('click', function () {
+                    api.updateEvent(item['id'], item)
+                });
+            });
 
-        input3.setAttribute('disabled', 'True');
-        
-        input3.addEventListener('change', (event) => {
-            newEvent['endDate'] = event.target.value.getTime();
-            checkUpdate(newEvent, data[i]);
-            console.log(newEvent);
-        }, false);
-        
-        td3.appendChild(input3);
-        tr.appendChild(td3);
-
-        let td4 = document.createElement('TD');
-        var btn1 = document.createElement("button");
-        btn1.className = `edit${i}`;
-        btn1.appendChild(document.createTextNode("EDIT"));
-        var btn2 = document.createElement("button");
-        btn2.className='del';
-        btn2.appendChild(document.createTextNode("DELETE"));
-   
-        td4.appendChild(btn1);
-        td4.appendChild(btn2);
-        tr.appendChild(td4);
-
-        td1.className = 'event-name';
-        td2.className = 'start-date';
-        td2.className = 'end-date';
-
-        btn1.onclick = function() {
-            input1.removeAttribute('disabled', 'True');
-            input2.removeAttribute('disabled', 'True');
-            input3.removeAttribute('disabled', 'True');
-            
-            console.log(document.getElementsByClassName(`edit${i}`)[0])
-            document.getElementsByClassName(`edit${i}`)[0].innerText = 'SAVE';
-            document.getElementsByClassName(`edit${i}`)[0].id = `save${i}`;
-
-            console.log(document.getElementById(`save${i}`))
-            document.getElementById(`save${i}`).onclick = function () {
-                api.updateEvent(data[i]['id'], data[i])
-            };
-        };
-
-        btn2.onclick = function () {
-            var div = this.parentElement.parentElement;
-            div.style.display = "none";
-            api.deleteEvent(data[i]['id']);
-        };
-        document.getElementsByTagName('TABLE')[0].appendChild(tr)
-    }};
+            $(`.del${index}`).on('click', function () {
+                console.log(1)
+                $(`.del${index}`).parent().parent().hide()
+                api.deleteEvent(item['id']);
+            });
+        })
+    };
 
     let rows_per_page = 5;
     let curr_page = 1
 
-    function display(rows_per_page, data, curr_page){
-        let start = (curr_page-1) * rows_per_page;
+    displayData(data)
+
+    function display(rows_per_page, data, curr_page) {
+        let start = (curr_page - 1) * rows_per_page;
         let end = start + rows_per_page;
 
         let display_list = data.slice(start, end);
         displayData(display_list);
     }
-    
-    function managePagination(rows_per_page, data){
+
+    function managePagination(rows_per_page, data) {
         console.log(data)
         let totalPage = Math.ceil(data.length / rows_per_page);
         console.log(totalPage)
-        let pre = document.getElementsByClassName('previous')[0];
-        let next = document.getElementsByClassName('next')[0];
-        console.log(pre)
-        pre.onclick = function() {
+        let pre = $('.previous')[0];
+        let next = $('.next')[0];
+
+        pre.onclick = function () {
             curr_page -= 1;
-            if(curr_page <= totalPage && curr_page >0){
-                
+            if (curr_page <= totalPage && curr_page > 0) {
                 display(rows_per_page, data, curr_page);
             }
-            
         }
 
-        next.onclick = function() {
+        next.onclick = function () {
             curr_page += 1;
-            if (curr_page <= totalPage && curr_page > 0){
+            if (curr_page <= totalPage && curr_page > 0) {
                 display(rows_per_page, data, curr_page);
             }
-           
         }
     }
     display(rows_per_page, data, curr_page);
@@ -159,81 +117,49 @@ let data = api.getEvents().then((data) => {
 
     // add new event
     let newEvent = {};
-    var addbtn = document.getElementsByClassName("addbtn");
-    addbtn[0].addEventListener('click', () => {
-        
-        if (data.length < document.getElementsByTagName('TR').length -2) {
+    var addbtn = $(".addbtn");
+    addbtn[0].on('click', () => {
+        console.log($('tr').length)
+        if (data.length < $('tr').length/2 - 1) {
             return 0
         }
 
-        let tr = document.createElement('TR');
-        let td1 = document.createElement("TD");
-        let input1 = document.createElement('INPUT');
-        input1.addEventListener('change', (event) => {
+        $('table').append(
+            '<tr class="myinput">' +
+            '<td><input class="input1" ></td>' +
+            '<td><input class="input2" type="date"></td>' +
+            '<td><input class="input3" type="date"></td>' +
+            '<td><button class="save">SAVE</button>' +
+            '<button class="del">DELETE</button>' +
+            '</tr>'
+        )
+
+        $('.input1').on('change', (event) => {
             newEvent['eventName'] = event.target.value;
-            console.log(newEvent);
-        }, false);
+            console.log(event.target.value);
+        });
 
-        td1.appendChild(input1);
-        tr.appendChild(td1);
-
-        let td2 = document.createElement("TD");
-        let input2 = document.createElement('INPUT');
-        input2.setAttribute('type', 'date');
-        input2.addEventListener('change', (event) => {
+        $('.input2').on('change', (event) => {
             newEvent['startDate'] = convertDatetoISO(event.target.value);
             console.log(newEvent);
-        }, false);
+        });
 
-        td2.appendChild(input2);
-        tr.appendChild(td2);
-
-        let td3 = document.createElement("TD");
-        let input3 = document.createElement('INPUT');
-        input3.setAttribute('type', 'date');
-        input3.addEventListener('change', (event) => {
+        $('.input3').on('change', (event) => {
             newEvent['endDate'] = convertDatetoISO(event.target.value);
             console.log(newEvent);
-        }, false);
-
-        td3.appendChild(input3);
-        tr.appendChild(td3);
-
-        let td4 = document.createElement('TD');
-        var btn1 = document.createElement("button");
-        btn1.className = 'save';
-        btn1.appendChild(document.createTextNode("SAVE"));
-        var btn2 = document.createElement("button");
-        btn2.className = 'del';
-        btn2.appendChild(document.createTextNode("DELETE"));
-
-        td4.appendChild(btn1);
-        td4.appendChild(btn2);
-        tr.appendChild(td4);
-
-        td1.className = 'event-name';
-        td2.className = 'start-date';
-        td2.className = 'end-date';
+        });
 
         // save event
-        btn1.onclick = function () {
-
-            newEvent['id'] = document.getElementsByTagName('TR').length / 2 + 1;
+        $('.save').on('click', function () {
+            newEvent['id'] = $('tr').length / 2 - 1;
             console.log(newEvent);
             api.addEvent(newEvent);
-        };
+        });
 
         // delete event
-        btn2.onclick = function () {
-            var div = this.parentElement.parentElement;
-            console.log(div);
-            div.style.display = "none";
-            api.deleteEvent(data[i]['id']);
-        };
-
-        document.getElementsByTagName('TABLE')[0].appendChild(tr);
-    }, false);
+        $('.del').on('click', function () {
+            $('.del').parent().parent().hide();
+            api.deleteEvent(newEvent['id']);
+        });
+    });
 });
-
-
-
